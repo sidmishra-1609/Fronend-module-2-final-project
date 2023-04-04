@@ -1,0 +1,24 @@
+element.style {
+}
+#img-container>img {
+    width: 100%;
+    height: 100%;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+user agent stylesheet
+img {
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
+#current-image-container {
+    padding: 25px;
+    background-color: #000;
+    color: #fff;
+}
+body {
+    font-family: 'Inter', sans-serif;
+}
