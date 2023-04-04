@@ -1,172 +1,96 @@
-Object
-date
-: 
-"2023-04-04"
-explanation
-: 
-"The largest volcano in our Solar System is on Mars.  Although three times higher than Earth's Mount Everest, Olympus Mons will not be difficult for humans to climb because of the volcano's shallow slopes and Mars' low gravity.  Covering an area greater than the entire Hawaiian volcano chain, the slopes of Olympus Mons typically rise only a few degrees at a time.  Olympus Mons is an immense shield volcano, built long ago by fluid lava.  A relatively static surface crust allowed it to build up over time. Its last eruption is thought to have been about 25 million years ago.  The featured image was taken by the European Space Agency's robotic Mars Express spacecraft currently orbiting the  Red Planet.    Your Sky Surprise: What picture did APOD feature on your birthday? (post 1995)"
-hdurl
-: 
-"https://apod.nasa.gov/apod/image/2304/OlympusMons_MarsExpress_6000.jpg"
-media_type
-: 
-"image"
-service_version
-: 
-"v1"
-title
-: 
-"Olympus Mons: Largest Volcano in the Solar System"
-url
-: 
-"https://apod.nasa.gov/apod/image/2304/OlympusMons_MarsExpress_960.jpg"
-[[Prototype]]
-: 
-Object
-constructor
-: 
-ƒ Object()
-assign
-: 
-ƒ assign()
-create
-: 
-ƒ create()
-defineProperties
-: 
-ƒ defineProperties()
-defineProperty
-: 
-ƒ defineProperty()
-entries
-: 
-ƒ entries()
-freeze
-: 
-ƒ freeze()
-fromEntries
-: 
-ƒ fromEntries()
-getOwnPropertyDescriptor
-: 
-ƒ getOwnPropertyDescriptor()
-getOwnPropertyDescriptors
-: 
-ƒ getOwnPropertyDescriptors()
-getOwnPropertyNames
-: 
-ƒ getOwnPropertyNames()
-getOwnPropertySymbols
-: 
-ƒ getOwnPropertySymbols()
-getPrototypeOf
-: 
-ƒ getPrototypeOf()
-hasOwn
-: 
-ƒ hasOwn()
-is
-: 
-ƒ is()
-isExtensible
-: 
-ƒ isExtensible()
-isFrozen
-: 
-ƒ isFrozen()
-isSealed
-: 
-ƒ isSealed()
-keys
-: 
-ƒ keys()
-length
-: 
-1
-name
-: 
-"Object"
-preventExtensions
-: 
-ƒ preventExtensions()
-prototype
-: 
-{constructor: ƒ, __defineGetter__: ƒ, __defineSetter__: ƒ, hasOwnProperty: ƒ, __lookupGetter__: ƒ, …}
-seal
-: 
-ƒ seal()
-setPrototypeOf
-: 
-ƒ setPrototypeOf()
-values
-: 
-ƒ values()
-arguments
-: 
-(...)
-caller
-: 
-(...)
-[[Prototype]]
-: 
-ƒ ()
-[[Scopes]]
-: 
-Scopes[0]
-hasOwnProperty
-: 
-ƒ hasOwnProperty()
-isPrototypeOf
-: 
-ƒ isPrototypeOf()
-propertyIsEnumerable
-: 
-ƒ propertyIsEnumerable()
-toLocaleString
-: 
-ƒ toLocaleString()
-toString
-: 
-ƒ toString()
-valueOf
-: 
-ƒ valueOf()
-__defineGetter__
-: 
-ƒ __defineGetter__()
-__defineSetter__
-: 
-ƒ __defineSetter__()
-__lookupGetter__
-: 
-ƒ __lookupGetter__()
-__lookupSetter__
-: 
-ƒ __lookupSetter__()
-__proto__
-: 
-(...)
-get __proto__
-: 
-ƒ __proto__()
-set __proto__
-: 
-ƒ __proto__()
-length
-: 
-1
-name
-: 
-"set __proto__"
-arguments
-: 
-(...)
-caller
-: 
-(...)
-[[Prototype]]
-: 
-ƒ ()
-[[Scopes]]
-: 
-Scopes[0]
+let api_key = "vPHOqlV7gxIHAa4Y2IfjxBYgmSOy5VT5np6eDmtn";
+
+// current date of the day
+const currentDate = new Date().toISOString().split("T")[0];
+// validation for input field of date
+document.getElementById("search-input").setAttribute('max', `${currentDate}`);
+
+// elements for the img Container
+let currentImgContainer = document.getElementById("current-image-container");
+let title = document.createElement('h1');
+let imgContainer = document.createElement('div');
+imgContainer.setAttribute('id', 'img-container');
+let img = document.createElement('img');
+let img_desc = document.createElement('h3');
+let description = document.createElement('p');
+
+// function to get the image of today
+function getCurrentImageOfTheDay(){
+    fetch(`https://api.nasa.gov/planetary/apod?api_key=${api_key}&date=${currentDate}`)
+    .then((res) => {
+        return res.json();
+    })
+    .then((data) => {
+        console.log(data);
+        title.innerHTML = "NASA picture of the Day";
+        img.src = data.url;
+        imgContainer.appendChild(img);
+        img_desc.innerHTML = data.title;
+        description.innerHTML = data.explanation;      
+        currentImgContainer.append(title, imgContainer, img_desc, description);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+}
+
+// function to get the image of the day according to date.
+function getImageOfTheDay(event) {
+    let date;
+    if(event.target.value == "Search"){
+        date = document.getElementById('search-input').value;
+    } else {
+        date = event.target.innerHTML;
+    }
+
+    fetch(`https://api.nasa.gov/planetary/apod?api_key=${api_key}&date=${date}`)
+    .then((res) => {
+        return res.json();
+    })
+    .then((data) => {
+        title.innerHTML = `Picture on ${date}`;
+        img.src = data.url;
+        imgContainer.appendChild(img);
+        img_desc.innerHTML = data.title;
+        description.innerHTML = data.explanation;      
+        currentImgContainer.append(title, imgContainer, img_desc, description);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+    if(event.target.value == "Search"){
+        saveSearch(date);
+    }
+    event.preventDefault();
+}
+
+// function to save the data in local storage
+let history = [];
+function saveSearch(date){
+    history.push({date: `${date}`});
+    localStorage.setItem("History", JSON.stringify(history));
+    addSearchToHistory();
+}
+
+// function to save the data in History
+function addSearchToHistory(){
+    let searchHistory = document.getElementById('search-history');
+    searchHistory.innerHTML = "";
+    history.forEach((item) => {
+        let li = document.createElement('li');
+        let anchor = document.createElement('a');
+        anchor.setAttribute('href', "#");
+        anchor.innerHTML = item.date;
+        li.appendChild(anchor);
+        searchHistory.appendChild(li);
+    });
+    let searchList = document.querySelectorAll('#search-history>li>a');
+    searchList.forEach((item) => {
+        item.addEventListener('click', getImageOfTheDay);
+    });
+}
+
+// program start from here
+document.getElementById('search').addEventListener('click', getImageOfTheDay);
+// function call for current image when page loads.
+window.addEventListener('load', getCurrentImageOfTheDay);
